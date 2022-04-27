@@ -1,0 +1,13 @@
+/.github
+/.vscode
+/.*ignore
+/*.config.*
+/.eslintrc.*
+/tsconfig.json
+/script
+/src
+/test
+/lib/src
+/lib/test
+/dist
+/coverage

@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/node_modules/": true
+    },
+    "cSpell.words": [
+        "cobertura",
+        "lcov",
+        "leasot",
+        "openapi",
+        "pnpm",
+        "softprops",
+        "tsoa",
+        "vendia"
+    ]
+}

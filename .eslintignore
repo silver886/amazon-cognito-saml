@@ -1,0 +1,10 @@
+/node_modules
+/lib
+/dist
+/coverage
+/test-reports
+
+*.json
+*.js
+!/.eslintrc.js
+!/jest.config.js

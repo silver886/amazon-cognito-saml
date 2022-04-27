@@ -1,0 +1,8 @@
+**/dist
+**/lambda/**/lib
+**/coverage
+**/test-reports
+**/node_modules
+
+.env*
+**/*.ignore.*

@@ -1,0 +1,28 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{github.ref_name}}
+
+  release-package:
+    name: Node.js package
+    needs: create-release
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/release-package.yaml
+    secrets:
+      NPM: ${{secrets.NPM}}
