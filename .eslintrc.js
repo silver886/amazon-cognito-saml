@@ -13,4 +13,8 @@ module.exports = {
         '@silver886/eslint-config/typescript',
     ],
     parser: '@typescript-eslint/parser',
+    rules:  {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'import/no-nodejs-modules': ['off'],
+    },
 };

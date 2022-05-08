@@ -3,16 +3,11 @@
         "**/node_modules/": true
     },
     "cSpell.words": [
-        "attrname",
         "authenio",
-        "cobertura",
-        "grafana",
-        "lcov",
-        "leasot",
+        "oidc",
         "openapi",
-        "pnpm",
+        "plusplus",
         "samlify",
-        "softprops",
         "tsoa",
         "vendia"
     ]

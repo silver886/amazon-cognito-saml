@@ -1,6 +1,5 @@
-/* eslint-disable import/no-nodejs-modules */
+/* eslint-disable import/default */
 import {resolve} from 'path';
-// eslint-disable-next-line import/default
 import CopyPlugin from 'copy-webpack-plugin';
 import {TsconfigPathsPlugin} from 'tsconfig-paths-webpack-plugin';
 import ZipPlugin from 'zip-webpack-plugin';

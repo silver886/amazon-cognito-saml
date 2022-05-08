@@ -1,4 +1,3 @@
-/* eslint-disable import/no-nodejs-modules */
 import {env, exit} from 'process';
 import {inspect} from 'util';
 import {configure} from '@vendia/serverless-express';
@@ -37,7 +36,7 @@ if (env.NODE_ENV === 'local') {
         let httpServer: Server | null = null;
 
         process.on('SIGINT', () => {
-        // eslint-disable-next-line no-console
+            // eslint-disable-next-line no-console
             console.log('SIGINT signal received');
 
             // eslint-disable-next-line no-console
@@ -50,7 +49,7 @@ if (env.NODE_ENV === 'local') {
 
                     exit(ExitCode.SIGINT_SERVER_CLOSE);
                 } catch (error) {
-                // eslint-disable-next-line no-console
+                    // eslint-disable-next-line no-console
                     console.error(error);
                     // eslint-disable-next-line no-console
                     console.error('Server close failed');
@@ -68,7 +67,7 @@ if (env.NODE_ENV === 'local') {
                 console.log(`Server (${APP.get('env') as string}) start listening on: ${serverAddress.address}:${serverAddress.port}`);
             });
         } catch (err) {
-        // eslint-disable-next-line no-console
+            // eslint-disable-next-line no-console
             console.error(err);
             // eslint-disable-next-line no-console
             console.error('Server crashed');

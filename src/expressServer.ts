@@ -12,7 +12,7 @@ import helmet from 'helmet';
 import {StatusCodes} from 'http-status-codes';
 import {getAbsoluteFSPath} from 'swagger-ui-dist';
 import swaggerUI from 'swagger-ui-express';
-import {HeaderName} from './config';
+import {COOKIE_SECRET, HeaderName} from './config';
 import swagger from './openapi/swagger.json'; // eslint-disable-line import/extensions
 import {RegisterRoutes as registerRoutes} from './routes/routes';
 import type {Express, NextFunction, Request, Response} from 'express';
@@ -36,7 +36,7 @@ export const APP = ((): Express => {
     }));
     app.use(helmet());
     app.use(compression());
-    app.use(cookieParser());
+    app.use(cookieParser(COOKIE_SECRET));
     app.use(requestId({
         setHeader:  true,
         headerName: HeaderName.REQUEST_ID,
