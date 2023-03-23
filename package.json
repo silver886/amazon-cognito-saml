@@ -6,15 +6,20 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "comments": "leasot --ignore .git/**,node_modules/** --tags NOTE OPTIMIZE TODO HACK XXX FIXME BUG --filetype .ts **",
-    "lint": "eslint .",
-    "watch-test": "jest --coverage --watchAll",
+    "format": "prettier --write . && eslint --fix .",
+    "format-check": "prettier --check . && eslint .",
+    "watch-test": "npm run test -- --watchAll",
     "test": "jest --coverage",
-    "build": "tsoa spec-and-routes && tsc",
-    "bundle": "tsoa spec-and-routes && webpack",
+    "predev-start": "npm run tsoa-gen",
+    "dev-start": "env NODE_ENV=local ts-node src/index.ts",
     "start": "node dist/index.js",
-    "dev-start": "tsoa spec-and-routes && ts-node src/index.ts",
-    "prepare": "tsc",
-    "prepublishOnly": "pnpm test"
+    "prebuild": "npm run tsoa-gen",
+    "build": "tsc",
+    "prebundle": "npm run tsoa-gen",
+    "bundle": "webpack",
+    "prepublish": "npm run build",
+    "prepublishOnly": "npm run test",
+    "tsoa-gen": "tsoa spec-and-routes"
   },
   "repository": {
     "type": "git",

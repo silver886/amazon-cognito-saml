@@ -5,3 +5,7 @@
 
 .env*
 **/*.ignore.*
+
+# tsoa
+/src/openapi
+/src/routes

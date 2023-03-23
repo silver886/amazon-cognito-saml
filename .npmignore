@@ -10,4 +10,4 @@
 /lib/src
 /lib/test
 /dist
-/coverage
+/jest-reports
