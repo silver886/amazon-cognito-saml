@@ -256,10 +256,8 @@ export const SAML_SERVICE_PROVIDERS: Record<string, ServiceProviderInstance> =
    Object.fromEntries(
       (
          Object.values(
-            // eslint-disable-next-line max-lines-per-function
             ((): Record<string, SamlServiceProviderEnv | null> => {
                let output: Record<string, SamlServiceProviderEnv | null> = {};
-
                Object.entries(env)
                   .filter(
                      ([
@@ -279,7 +277,6 @@ export const SAML_SERVICE_PROVIDERS: Record<string, ServiceProviderInstance> =
                         );
                      },
                   );
-
                return output;
             })(),
          ).filter((v) => v) as SamlServiceProviderEnv[]
@@ -326,9 +323,9 @@ export const SAML_IDENTITY_PROVIDERS: Record<string, IdentityProviderInstance> =
                   (w) => ({
                      ...w,
                      Location: `${w.Location}?spId=${v}`,
-                     /* eslint-enable @typescript-eslint/naming-convention */
                   }),
                ),
+            /* eslint-enable @typescript-eslint/naming-convention */
          }),
       ]),
    );

@@ -72,7 +72,6 @@ export const APP = ((): Express => {
 
    app.use('/', routing);
 
-   // eslint-disable-next-line consistent-return, max-params, @typescript-eslint/no-invalid-void-type
    app.use(
       (
          err: unknown,
@@ -120,7 +119,6 @@ export const APP = ((): Express => {
    return app;
 })();
 
-// eslint-disable-next-line max-statements
 export function expressServer(): Server {
    const server = http.createServer(APP);
    return server;

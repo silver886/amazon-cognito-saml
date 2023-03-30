@@ -117,6 +117,7 @@ export class SamlController extends Controller {
 
    /**
     * Perform single sign on.
+    * Redirect to OpenID Connect.
     */
    @Response<BasicResponse & {message: string}>(
       StatusCodes.INTERNAL_SERVER_ERROR,
@@ -167,6 +168,7 @@ export class SamlController extends Controller {
 
    /**
     * Perform single sign on.
+    * Redirect to OpenID Connect.
     */
    @Response<BasicResponse & {message: string}>(
       StatusCodes.INTERNAL_SERVER_ERROR,

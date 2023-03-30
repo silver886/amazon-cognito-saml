@@ -19,6 +19,7 @@ import type {BasicResponse} from '@@models/common';
 export class OidcController extends Controller {
    /**
     * Perform single sign on.
+    * Redirect to application.
     */
    /* spell-checker: disable */
    @Example<string>(`<!DOCTYPE html>

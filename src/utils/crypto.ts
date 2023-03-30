@@ -40,9 +40,9 @@ export function encrypt(password: string, data: string): string {
 export function decrypt(password: string, data: string): string {
    const buffer = Buffer.from(data, ENCODING);
 
-   const salt = buffer.slice(START_POINT, SALT_LENGTH);
-   const iv = buffer.slice(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
-   const tag = buffer.slice(
+   const salt = buffer.subarray(START_POINT, SALT_LENGTH);
+   const iv = buffer.subarray(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
+   const tag = buffer.subarray(
       SALT_LENGTH + IV_LENGTH,
       SALT_LENGTH + IV_LENGTH + TAG_LENGTH,
    );
@@ -54,10 +54,10 @@ export function decrypt(password: string, data: string): string {
    );
    decipher.setAuthTag(tag);
 
-   // eslint-disable-next-line no-undefined
    const decrypted =
       decipher.update(
-         buffer.slice(SALT_LENGTH + IV_LENGTH + TAG_LENGTH),
+         buffer.subarray(SALT_LENGTH + IV_LENGTH + TAG_LENGTH),
+         // eslint-disable-next-line no-undefined
          undefined,
          DATA_ENCODING,
       ) + decipher.final(DATA_ENCODING);

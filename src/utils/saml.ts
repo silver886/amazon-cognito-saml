@@ -6,9 +6,10 @@ import type {State} from '@@src/models/saml';
 
 export function divide(state: State): [string, string] {
    const compressed = brotliCompressSync(JSON.stringify(state));
-   // eslint-disable-next-line @typescript-eslint/no-magic-numbers
    return [
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       Buffer.from(compressed.filter((_, i) => i % 2 === 0)).toString('base64'),
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       Buffer.from(compressed.filter((_, i) => i % 2 === 1)).toString('base64'),
    ];
 }
