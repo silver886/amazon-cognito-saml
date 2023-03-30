@@ -10,10 +10,10 @@ import {
    OIDC_CLIENT_CALLBACK_URL,
    SAML_IDENTITY_PROVIDERS,
    SAML_IDENTITY_PROVIDER_ASSERTION_LIFE_TIME,
+   SAML_IDENTITY_PROVIDER_CONDITION_GRACE_TIME,
    SAML_SERVICE_PROVIDERS,
    getOidcClient,
 } from '@@src/config';
-import {randomSelect} from '@@src/utils/array';
 import {decrypt} from '@@src/utils/crypto';
 import {combine} from '@@src/utils/saml';
 import type {OidcController} from '@@src/controllers/oidc';
@@ -75,6 +75,7 @@ export async function callback(
 
       const userInfo = decode(userIdToken, {json: true}) as {
          /* eslint-disable @typescript-eslint/naming-convention */
+         jti: string;
          'cognito:username': string;
          'cognito:groups': [string];
          name: string;
@@ -96,6 +97,9 @@ export async function callback(
       const sp = SAML_SERVICE_PROVIDERS[serviceProviderId];
 
       const now = new Date();
+      const conditionTime = new Date(
+         now.getTime() - SAML_IDENTITY_PROVIDER_CONDITION_GRACE_TIME,
+      );
       const lifeTime = new Date(
          now.getTime() + SAML_IDENTITY_PROVIDER_ASSERTION_LIFE_TIME,
       );
@@ -121,8 +125,8 @@ export async function callback(
             id: request.id,
             context: SamlLib.replaceTagsByValue(template, {
                /* eslint-disable @typescript-eslint/naming-convention */
-               ID: request.id,
-               AssertionID: request.id,
+               ID: `_${request.id}`,
+               AssertionID: `_${randomUUID()}`,
                InResponseTo: requestId,
                Audience: sp.entityMeta.getEntityID(),
                EntityID: sp.entityMeta.getEntityID(),
@@ -131,14 +135,15 @@ export async function callback(
                SubjectRecipient: ssoService.location,
                Issuer: idp.entityMeta.getEntityID(),
                IssueInstant: now.toISOString(),
-               ConditionsNotBefore: now.toISOString(),
+               ConditionsNotBefore: conditionTime.toISOString(),
                ConditionsNotOnOrAfter: lifeTime.toISOString(),
+               AuthnInstant: now.toISOString(),
+               SessionNotOnOrAfter: lifeTime.toISOString(),
+               SessionIndex: userInfo.jti,
                SubjectConfirmationDataNotOnOrAfter: lifeTime.toISOString(),
                StatusCode: Constants.StatusCode.Success,
-               NameIDFormat: randomSelect([
-                  'idpNameIdFormat',
-               ]),
-               NameID: randomUUID(),
+               NameIDFormat: 'idpNameIdFormat',
+               NameID: `_${randomUUID()}`,
                attrUserId: userInfo['cognito:username'],
                attrUserEmail: userInfo.email,
                attrUserName: userInfo.name,

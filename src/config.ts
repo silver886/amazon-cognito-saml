@@ -6,10 +6,10 @@ import {
    Constants,
    IdentityProviderInstance,
    SamlLib,
+   ServiceProviderInstance,
    setSchemaValidator,
 } from 'samlify';
 import type {BaseClient} from 'openid-client';
-import type {ServiceProviderInstance} from 'samlify';
 import type {IdentityProviderSettings} from 'samlify/types/src/types';
 
 dotenv.config();
@@ -88,6 +88,10 @@ export async function getOidcClient(): Promise<BaseClient> {
 
 const SAML_IDENTITY_PROVIDER_BASE_URL = `${BASE_URL}/saml`;
 
+// Condition grace time in milliseconds.
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+export const SAML_IDENTITY_PROVIDER_CONDITION_GRACE_TIME = 15 * 1000;
+
 // Assertion life time in milliseconds.
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
 export const SAML_IDENTITY_PROVIDER_ASSERTION_LIFE_TIME = 5 * 60 * 1000;
@@ -128,6 +132,10 @@ const SAML_IDENTITY_PROVIDER_SETTINGS: IdentityProviderSettings = {
 
    loginResponseTemplate: {
       ...SamlLib.defaultLoginResponseTemplate,
+      context: SamlLib.defaultLoginResponseTemplate.context.replace(
+         /\{AuthnStatement\}/giu,
+         `<saml:AuthnStatement AuthnInstant="{AuthnInstant}" SessionNotOnOrAfter="{SessionNotOnOrAfter}" SessionIndex="{SessionIndex}"><saml:AuthnContext><saml:AuthnContextClassRef>${Constants.namespace.authnContextClassRef.passwordProtectedTransport}</saml:AuthnContextClassRef></saml:AuthnContext></saml:AuthnStatement>`,
+      ),
       attributes: [
          {
             /* spell-checker: disable */
@@ -160,8 +168,148 @@ const SAML_IDENTITY_PROVIDER_SETTINGS: IdentityProviderSettings = {
    /* eslint-enable @typescript-eslint/naming-convention */
 };
 
+interface SsoServiceEnv {
+   isDefault: string;
+   binding: string;
+   location: string;
+}
+
+interface SamlServiceProviderEnv {
+   id: string;
+   entityId: string;
+   assertionConsumerService: Record<string, SsoServiceEnv | null>;
+   singleLogoutService: Record<string, SsoServiceEnv | null>;
+}
+
+// eslint-disable-next-line max-params
+function mergeSsoServiceEnv(
+   envNamePattern: RegExp,
+   envName: string,
+   value: string,
+   target?: Record<string, SsoServiceEnv | null>,
+): Record<string, SsoServiceEnv | null> {
+   const {id, key} = envNamePattern.exec(envName)?.groups ?? {
+      id: null,
+      key: null,
+   };
+   if (!id || !key) return target ?? {};
+   return {
+      ...target,
+      [id]: {
+         isDefault:
+            key === 'IS_DEFAULT'
+               ? value
+               : target
+               ? target[id]?.isDefault ?? ''
+               : '',
+         binding:
+            key === 'BINDING' ? value : target ? target[id]?.binding ?? '' : '',
+         location:
+            key === 'LOCATION'
+               ? value
+               : target
+               ? target[id]?.location ?? ''
+               : '',
+      },
+   };
+}
+
+// eslint-disable-next-line max-params
+function mergeSamlServiceProviderEnv(
+   envNamePattern: RegExp,
+   envName: string,
+   value?: string,
+   target?: Record<string, SamlServiceProviderEnv | null>,
+): Record<string, SamlServiceProviderEnv | null> {
+   const {id, key} = envNamePattern.exec(envName)?.groups ?? {
+      id: null,
+      key: null,
+   };
+   if (!id || !key || !value) return target ?? {};
+   return {
+      ...target,
+      [id]: {
+         id: key === 'ID' ? value : target ? target[id]?.id ?? '' : '',
+         entityId:
+            key === 'ENTITY_ID'
+               ? value
+               : target
+               ? target[id]?.entityId ?? ''
+               : '',
+         assertionConsumerService: mergeSsoServiceEnv(
+            /^ASSERTION_CONSUMER_SERVICE_(?<id>\d+)_(?<key>.*)$/giu,
+            key,
+            value,
+            target ? target[id]?.assertionConsumerService ?? {} : {},
+         ),
+         singleLogoutService: mergeSsoServiceEnv(
+            /^SINGLE_LOGOUT_SERVICE_(?<id>\d+)_(?<key>.*)$/giu,
+            key,
+            value,
+            target ? target[id]?.singleLogoutService ?? {} : {},
+         ),
+      },
+   };
+}
+
 export const SAML_SERVICE_PROVIDERS: Record<string, ServiceProviderInstance> =
-   {};
+   Object.fromEntries(
+      (
+         Object.values(
+            // eslint-disable-next-line max-lines-per-function
+            ((): Record<string, SamlServiceProviderEnv | null> => {
+               let output: Record<string, SamlServiceProviderEnv | null> = {};
+
+               Object.entries(env)
+                  .filter(
+                     ([
+                        k,
+                     ]) => k.startsWith('SAML_SERVICE_PROVIDER_'),
+                  )
+                  .forEach(
+                     ([
+                        k,
+                        v,
+                     ]) => {
+                        output = mergeSamlServiceProviderEnv(
+                           /^SAML_SERVICE_PROVIDER_(?<id>\d+)_(?<key>.*)$/giu,
+                           k,
+                           v,
+                           output,
+                        );
+                     },
+                  );
+
+               return output;
+            })(),
+         ).filter((v) => v) as SamlServiceProviderEnv[]
+      ).map((v) => [
+         v.id,
+         new ServiceProviderInstance({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            entityID: v.entityId,
+            assertionConsumerService: (
+               Object.values(v.assertionConsumerService).filter(
+                  (w) => w,
+               ) as SsoServiceEnv[]
+            ).map((w) => ({
+               isDefault: /^true$/giu.test(w.isDefault),
+               Binding: w.binding,
+               Location: w.location,
+            })),
+            singleLogoutService: (
+               Object.values(v.singleLogoutService).filter(
+                  (w) => w,
+               ) as SsoServiceEnv[]
+            ).map((w) => ({
+               isDefault: /^true$/giu.test(w.isDefault),
+               Binding: w.binding,
+               Location: w.location,
+            })),
+            /* eslint-enable @typescript-eslint/naming-convention */
+         }),
+      ]),
+   );
 
 export const SAML_IDENTITY_PROVIDERS: Record<string, IdentityProviderInstance> =
    Object.fromEntries(
