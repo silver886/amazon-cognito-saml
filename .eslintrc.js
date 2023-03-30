@@ -11,10 +11,14 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
         '@silver886/eslint-config/typescript',
+        'prettier',
     ],
-    parser: '@typescript-eslint/parser',
-    rules:  {
+    parser:  '@typescript-eslint/parser',
+    plugins: [
+        'prettier',
+    ],
+    rules: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        'import/no-nodejs-modules': ['off'],
+        'prettier/prettier': 'error',
     },
 };

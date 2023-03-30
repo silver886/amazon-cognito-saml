@@ -1,0 +1,13 @@
+/node_modules
+/pnpm-lock.yaml
+/lib
+/dist
+/jest-reports
+
+*.js
+!/.eslintrc.js
+!/jest.config.js
+
+# tsoa
+/src/openapi
+/src/routes

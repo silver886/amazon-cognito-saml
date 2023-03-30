@@ -1,8 +1,7 @@
 **/dist
 **/lambda/**/lib
-**/coverage
-**/test-reports
 **/node_modules
+**/jest-reports
 
 .env*
 **/*.ignore.*
