@@ -1,31 +1,31 @@
 {
-    "$schema": "http://json.schemastore.org/prettierrc",
-    "printWidth": 80,
-    "tabWidth": 3,
-    "useTabs": false,
-    "endOfLine": "lf",
-    "semi": true,
-    "trailingComma": "all",
-    "quoteProps": "as-needed",
-    "singleQuote": true,
-    "jsxSingleQuote": true,
-    "bracketSpacing": false,
-    "bracketSameLine": false,
-    "arrowParens": "always",
-    "plugins": [
-        "prettier-plugin-multiline-arrays"
-    ],
-    "multilineArraysWrapThreshold": 0,
-    "overrides": [
-        {
-            "files": [
-                "*.yaml",
-                "*.yml",
-                "*.md"
-            ],
-            "options": {
-                "tabWidth": 2
-            }
-        }
-    ]
+   "$schema": "http://json.schemastore.org/prettierrc",
+   "printWidth": 80,
+   "tabWidth": 3,
+   "useTabs": false,
+   "endOfLine": "lf",
+   "semi": true,
+   "trailingComma": "all",
+   "quoteProps": "as-needed",
+   "singleQuote": true,
+   "jsxSingleQuote": true,
+   "bracketSpacing": false,
+   "bracketSameLine": false,
+   "arrowParens": "always",
+   "plugins": [
+      "prettier-plugin-multiline-arrays"
+   ],
+   "multilineArraysWrapThreshold": 0,
+   "overrides": [
+      {
+         "files": [
+            "*.yaml",
+            "*.yml",
+            "*.md"
+         ],
+         "options": {
+            "tabWidth": 2
+         }
+      }
+   ]
 }

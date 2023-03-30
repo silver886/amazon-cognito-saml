@@ -1,6 +1,14 @@
 /* eslint-disable new-cap */
 import {ErrorContext} from '@silver886/error-context';
-import {Controller, Example, Get, Request, Response, Route, Tags} from '@tsoa/runtime';
+import {
+   Controller,
+   Example,
+   Get,
+   Request,
+   Response,
+   Route,
+   Tags,
+} from '@tsoa/runtime';
 import {StatusCodes} from 'http-status-codes';
 import {CompositeRequest} from '@@models/common';
 import {callback} from '@@src/services/oidc';
@@ -9,11 +17,11 @@ import type {BasicResponse} from '@@models/common';
 @Route('oidc')
 @Tags('OIDC')
 export class OidcController extends Controller {
-    /**
-     * Perform single sign on.
-     */
-    /* spell-checker: disable */
-    @Example<string>(`<!DOCTYPE html>
+   /**
+    * Perform single sign on.
+    */
+   /* spell-checker: disable */
+   @Example<string>(`<!DOCTYPE html>
         <html>
             <body>
                 <h1>Redirecting to where you come from . . .</h1>
@@ -28,31 +36,40 @@ export class OidcController extends Controller {
                 </script>
             </body>
         </html>`)
-    /* spell-checker: enable */
-    @Response<BasicResponse & {message: string}>(StatusCodes.INTERNAL_SERVER_ERROR, 'Internal server error', {
-        requestId: '3ac8c050-8084-4d26-a01e-60587208e231',
-        message:   'Internal Server Error',
-    })
-    @Get('/callback')
-    public async getCallback(@Request() request: CompositeRequest): Promise<OidcController> {
-        const response = request.res;
-        if (!response) {
-            throw new ErrorContext(new Error('Response is undefined'), {
-                requestId:      request.id,
-                source:         `[getCallback] (${__filename})`,
-                httpStatusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-                request,
-            });
-        }
+   /* spell-checker: enable */
+   @Response<BasicResponse & {message: string}>(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Internal server error',
+      {
+         requestId: '3ac8c050-8084-4d26-a01e-60587208e231',
+         message: 'Internal Server Error',
+      },
+   )
+   @Get('/callback')
+   public async getCallback(
+      @Request() request: CompositeRequest,
+   ): Promise<OidcController> {
+      const response = request.res;
+      if (!response) {
+         throw new ErrorContext(new Error('Response is undefined'), {
+            requestId: request.id,
+            source: `[getCallback] (${__filename})`,
+            httpStatusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+            request,
+         });
+      }
 
-        try {
-            return await callback(this, request, response);
-        } catch (err) {
-            throw new ErrorContext(err instanceof Error ? err : new Error(err as string), {
-                requestId: request.id,
-                source:    `[getCallback] (${__filename})`,
-                request,
-            });
-        }
-    }
+      try {
+         return await callback(this, request, response);
+      } catch (err) {
+         throw new ErrorContext(
+            err instanceof Error ? err : new Error(err as string),
+            {
+               requestId: request.id,
+               source: `[getCallback] (${__filename})`,
+               request,
+            },
+         );
+      }
+   }
 }

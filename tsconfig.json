@@ -1,60 +1,60 @@
 {
-  "compilerOptions": {
-    "target": "ES2021",
-    "module": "CommonJS",
-    "lib": [
-      "ES2021"
-    ],
-    "outDir": "./dist",
-    "alwaysStrict": true,
-    "declaration": true,
-    "experimentalDecorators": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-      "@@src/*": [
-        "src/*"
+   "compilerOptions": {
+      "target": "ES2021",
+      "module": "CommonJS",
+      "lib": [
+         "ES2021"
       ],
-      "@@models/*": [
-        "src/models/*"
-      ],
-      "@@controllers/*": [
-        "src/controllers/*"
-      ],
-      "@@services/*": [
-        "src/services/*"
-      ],
-      "@@apis/*": [
-        "src/apis/*"
-      ],
-      "@@utils/*": [
-        "src/utils/*"
+      "outDir": "./dist",
+      "alwaysStrict": true,
+      "declaration": true,
+      "experimentalDecorators": true,
+      "inlineSourceMap": true,
+      "inlineSources": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "strict": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictBindCallApply": true,
+      "strictPropertyInitialization": true,
+      "emitDecoratorMetadata": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "baseUrl": ".",
+      "paths": {
+         "@@src/*": [
+            "src/*"
+         ],
+         "@@models/*": [
+            "src/models/*"
+         ],
+         "@@controllers/*": [
+            "src/controllers/*"
+         ],
+         "@@services/*": [
+            "src/services/*"
+         ],
+         "@@apis/*": [
+            "src/apis/*"
+         ],
+         "@@utils/*": [
+            "src/utils/*"
+         ]
+      }
+   },
+   "ts-node": {
+      "require": [
+         "tsconfig-paths/register"
       ]
-    }
-  },
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
-  },
-  "include": [
-    "./src"
-  ]
+   },
+   "include": [
+      "./src"
+   ]
 }

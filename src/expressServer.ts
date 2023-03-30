@@ -21,73 +21,98 @@ import type {JsonObject} from 'swagger-ui-express';
 
 // eslint-disable-next-line max-statements, max-lines-per-function
 export const APP = ((): Express => {
-    const app = express();
+   const app = express();
 
-    app.use(cors({
-        credentials: true,
-    }));
-    app.use(bodyParser.json({
-        limit: '8MB',
-    }));
-    app.use(bodyParser.text());
-    app.use(express.json());
-    app.use(express.urlencoded({
-        extended: false,
-    }));
-    app.use(helmet());
-    app.use(compression());
-    app.use(cookieParser(COOKIE_SECRET));
-    app.use(requestId({
-        setHeader:  true,
-        headerName: HeaderName.REQUEST_ID,
-    }));
+   app.use(
+      cors({
+         credentials: true,
+      }),
+   );
+   app.use(
+      bodyParser.json({
+         limit: '8MB',
+      }),
+   );
+   app.use(bodyParser.text());
+   app.use(express.json());
+   app.use(
+      express.urlencoded({
+         extended: false,
+      }),
+   );
+   app.use(helmet());
+   app.use(compression());
+   app.use(cookieParser(COOKIE_SECRET));
+   app.use(
+      requestId({
+         setHeader: true,
+         headerName: HeaderName.REQUEST_ID,
+      }),
+   );
 
-    app.use(express.static(getAbsoluteFSPath()));
+   app.use(express.static(getAbsoluteFSPath()));
 
-    const routing = router();
-    routing.use('/api-doc', swaggerUI.serve, swaggerUI.setup(swagger as JsonObject, {customCss: '.swagger-ui .curl-command {display:none;}'}));
-    registerRoutes(routing);
+   const routing = router();
+   routing.use(
+      '/api-doc',
+      swaggerUI.serve,
+      swaggerUI.setup(swagger as JsonObject, {
+         customCss: '.swagger-ui .curl-command {display:none;}',
+      }),
+   );
+   registerRoutes(routing);
 
-    app.use('/', routing);
+   app.use('/', routing);
 
-    // eslint-disable-next-line consistent-return, max-params, @typescript-eslint/no-invalid-void-type
-    app.use((err: unknown, req: Request, res: Response, next: NextFunction): Response | void => {
-        if (err instanceof ValidateError) {
+   // eslint-disable-next-line consistent-return, max-params, @typescript-eslint/no-invalid-void-type
+   app.use(
+      (
+         err: unknown,
+         req: Request,
+         res: Response,
+         next: NextFunction,
+      ): Response | void => {
+         if (err instanceof ValidateError) {
             // eslint-disable-next-line no-console
             console.error(`Caught Validation Error for ${req.path}:`, err);
             return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-                message: 'Validation Failed',
-                details: err.fields,
+               message: 'Validation Failed',
+               details: err.fields,
             });
-        }
+         }
 
-        if (err instanceof ErrorContext) {
+         if (err instanceof ErrorContext) {
             // eslint-disable-next-line no-console
             console.error(`Caught Internal Server Error for ${req.path}:`, err);
-            return res.status(typeof err.context.httpStatusCode === 'number' ?
-                err.context.httpStatusCode :
-                StatusCodes.SERVICE_UNAVAILABLE).json({
-                requestId: err.context.requestId,
-                message:   err.message,
-            });
-        }
+            return res
+               .status(
+                  typeof err.context.httpStatusCode === 'number'
+                     ? err.context.httpStatusCode
+                     : StatusCodes.SERVICE_UNAVAILABLE,
+               )
+               .json({
+                  requestId: err.context.requestId,
+                  message: err.message,
+               });
+         }
 
-        if (err instanceof Error) {
+         if (err instanceof Error) {
             // eslint-disable-next-line no-console
             console.error(`Caught Unknown Error for ${req.path}:`, err);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: 'Internal Server Error',
+               message: 'Internal Server Error',
             });
-        }
+         }
 
-        next();
-    });
+         next();
+      },
+   );
 
-    return app;
+   return app;
 })();
 
 // eslint-disable-next-line max-statements
 export function expressServer(): Server {
-    const server = http.createServer(APP);
-    return server;
+   const server = http.createServer(APP);
+   return server;
 }

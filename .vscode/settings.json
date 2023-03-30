@@ -1,14 +1,14 @@
 {
-    "files.exclude": {
-        "**/node_modules/": true
-    },
-    "cSpell.words": [
-        "authenio",
-        "oidc",
-        "openapi",
-        "plusplus",
-        "samlify",
-        "tsoa",
-        "vendia"
-    ]
+   "files.exclude": {
+      "**/node_modules/": true
+   },
+   "cSpell.words": [
+      "authenio",
+      "oidc",
+      "openapi",
+      "plusplus",
+      "samlify",
+      "tsoa",
+      "vendia"
+   ]
 }
