@@ -1,5 +1,6 @@
 /* eslint-disable import/max-dependencies */
 import http from 'http';
+import {createId} from '@paralleldrive/cuid2';
 import {ErrorContext} from '@silver886/error-context';
 import {ValidateError} from '@tsoa/runtime';
 import bodyParser from 'body-parser';
@@ -7,7 +8,6 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, {Router as router} from 'express';
-import requestId from 'express-request-id';
 import helmet from 'helmet';
 import {StatusCodes} from 'http-status-codes';
 import {getAbsoluteFSPath} from 'swagger-ui-dist';
@@ -15,6 +15,7 @@ import swaggerUI from 'swagger-ui-express';
 import {COOKIE_SECRET, HeaderName} from './config';
 import swagger from './openapi/swagger.json'; // eslint-disable-line import/extensions
 import {RegisterRoutes as registerRoutes} from './routes/routes';
+import type {BasicRequest} from './models/common';
 import type {Express, NextFunction, Request, Response} from 'express';
 import type {Server} from 'http';
 import type {JsonObject} from 'swagger-ui-express';
@@ -44,10 +45,17 @@ export const APP = ((): Express => {
    app.use(compression());
    app.use(cookieParser(COOKIE_SECRET));
    app.use(
-      requestId({
-         setHeader: true,
-         headerName: HeaderName.REQUEST_ID,
-      }),
+      (
+         req: Partial<BasicRequest> & Request,
+         res: Partial<BasicRequest> & Response,
+         next: NextFunction,
+      ): void => {
+         const id = createId();
+         req.id = id;
+         res.append(HeaderName.REQUEST_ID, id);
+
+         next();
+      },
    );
 
    app.use(express.static(getAbsoluteFSPath()));
@@ -71,6 +79,7 @@ export const APP = ((): Express => {
          req: Request,
          res: Response,
          next: NextFunction,
+         // eslint-disable-next-line @typescript-eslint/no-invalid-void-type, max-params, consistent-return
       ): Response | void => {
          if (err instanceof ValidateError) {
             // eslint-disable-next-line no-console
