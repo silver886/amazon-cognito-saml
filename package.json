@@ -85,7 +85,7 @@
       "@tsoa/runtime": "^5.0.0",
       "@types/jsonwebtoken": "^9.0.1",
       "@vendia/serverless-express": "^4.10.1",
-      "body-parser": "^1.20.2",
+      "body-parser": "^2.2.1",
       "compression": "^1.7.4",
       "cookie-parser": "^1.4.6",
       "cors": "^2.8.5",
