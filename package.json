@@ -86,7 +86,7 @@
       "@types/jsonwebtoken": "^9.0.1",
       "@vendia/serverless-express": "^4.10.1",
       "body-parser": "^1.20.2",
-      "compression": "^1.7.4",
+      "compression": "^1.8.2",
       "cookie-parser": "^1.4.6",
       "cors": "^2.8.5",
       "dotenv": "^16.0.3",
